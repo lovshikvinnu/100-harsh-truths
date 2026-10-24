@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -47,10 +49,10 @@ fun MainScreen(
     val favorites by favoritesDataStore.favorites.collectAsState(initial = emptySet())
     val userName by settingsDataStore.userName.collectAsState(initial = null)
     val isNameSetupComplete by settingsDataStore.isNameSetupComplete.collectAsState(initial = true)
-    val (unlocked, total) = quoteRepository.getProgress()
+    val total = if (quotes.isNotEmpty()) quotes.size else 99
     val coroutineScope = rememberCoroutineScope()
 
-    if (!isNameSetupComplete || userName.isNullOrBlank()) {
+    if (!isNameSetupComplete) {
         NameSetupDialog(
             onNameSubmitted = { name ->
                 coroutineScope.launch {
@@ -105,15 +107,16 @@ fun MainScreen(
         }
     ) { padding ->
         Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp),
+            modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
             Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if (quotes.isEmpty()) {
@@ -132,24 +135,19 @@ fun MainScreen(
                     val currentQuote = todayQuote!!
                     val isFavorite = favorites.contains(currentQuote.id)
 
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        if (!selectedGreeting.isNullOrBlank()) {
-                            Text(
-                                text = selectedGreeting,
-                                style = Typography.titleMedium,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onBackground,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 4.dp)
-                            )
-                        }
-
-                        ProgressIndicator(unlocked, total)
+                    if (!selectedGreeting.isNullOrBlank()) {
+                        Text(
+                            text = selectedGreeting,
+                            style = Typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 8.dp, vertical = 4.dp)
+                        )
                     }
+
+                    ProgressIndicator(unlocked = currentQuote.id, total = total)
 
                     QuoteCard(
                         quote = currentQuote,
