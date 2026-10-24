@@ -1,0 +1,93 @@
+
+# ==========================================
+# 100 Harsh Truths - Android Project
+# ==========================================
+
+# ---- Android build outputs ----
+*.apk
+*.aab
+*.aar
+*.ap_
+*.dex
+*.class
+
+# ---- Gradle ----
+.gradle/
+**/.gradle/
+build/
+**/build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# ---- Kotlin ----
+.kotlin/
+*.kotlin_module
+
+# ---- Android SDK / Local configuration ----
+local.properties
+*.local
+
+# Private source material
+book.pdf
+extracted.txt
+100 HARSH TRUTHS OF LIFE.txt
+
+# Claude Code local configuration
+.claude/settings.local.json
+.claude/settings.json
+
+# ---- Android Studio / IntelliJ IDEA ----
+.idea/
+*.iml
+*.iws
+*.ipr
+.navigation/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# ---- Signing keys and certificates ----
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.pem
+*.key
+*.cer
+
+# ---- Secrets and environment files ----
+.env
+.env.*
+!.env.example
+secrets.properties
+keystore.properties
+google-services.json
+
+# ---- Logs and temporary files ----
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+hs_err_pid*
+replay_pid*
+
+# ---- OS-generated files ----
+.DS_Store
+Thumbs.db
+Desktop.ini
+.Spotlight-V100
+.Trashes
+
+# ---- Test / coverage outputs ----
+coverage/
+jacoco/
+*.exec
+
+# ---- Agent / scratch artifacts ----
+.artifacts/
+tmp/
+temp/
+
+# ---- Optional: generated reports ----
+reports/
