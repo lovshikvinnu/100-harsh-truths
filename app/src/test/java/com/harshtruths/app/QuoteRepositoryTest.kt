@@ -3,8 +3,15 @@ package com.harshtruths.app
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.harshtruths.app.data.QuoteRepository
+import com.harshtruths.app.data.SettingsDataStore
+import com.harshtruths.app.data.UpdateManager
+import com.harshtruths.app.ui.theme.ThemeMode
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -96,5 +103,35 @@ class QuoteRepositoryTest {
         assertNotNull(quote)
         assertEquals(15, quote?.id)
         assertEquals(15, repo.getSavedQuoteId())
+    }
+
+    @Test
+    fun testThemeModePersistence() = runBlocking {
+        val settings = SettingsDataStore(context)
+        assertEquals(ThemeMode.SYSTEM, settings.themeMode.first())
+
+        settings.setThemeMode(ThemeMode.DARK)
+        assertEquals(ThemeMode.DARK, settings.themeMode.first())
+
+        settings.setThemeMode(ThemeMode.LIGHT)
+        assertEquals(ThemeMode.LIGHT, settings.themeMode.first())
+    }
+
+    @Test
+    fun testVersionComparison() {
+        assertTrue(UpdateManager.isNewerVersion("1.1.0", "1.0.0"))
+        assertTrue(UpdateManager.isNewerVersion("2.0.0", "1.9.9"))
+        assertTrue(UpdateManager.isNewerVersion("1.0.1", "1.0.0"))
+        assertFalse(UpdateManager.isNewerVersion("1.0.0", "1.0.0"))
+        assertFalse(UpdateManager.isNewerVersion("1.0.0", "1.1.0"))
+    }
+
+    @Test
+    fun testOnboardingPersistence() = runBlocking {
+        val settings = SettingsDataStore(context)
+        assertFalse(settings.isOnboardingComplete.first())
+
+        settings.setOnboardingComplete(true)
+        assertTrue(settings.isOnboardingComplete.first())
     }
 }
